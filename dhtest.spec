@@ -1,5 +1,5 @@
-%global gittag 3041d10
-%global snapinfo 20180306git%{gittag}
+#%%global gittag 3041d10
+#%%global snapinfo 20180306git%{gittag}
 %global branch master
 
 Name:		dhtest
