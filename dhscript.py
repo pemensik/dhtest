@@ -7,6 +7,13 @@ with open('dhscript_log.txt', 'w') as f:
     f.write('')
     f.close
 
+class Config:
+    """ Test confiuration """
+    def __init__(self, mac, iface='eth0', dhtest='./dhtest'):
+        self.mac = mac
+        self.iface = iface
+        self.dhtest = dhtest
+
 #print_log(- prints the output to both stdout and file
 def print_log(msg, cmd=None):
     if cmd != None:
@@ -27,8 +34,11 @@ def write_log(msg):
         f.write(msg_full)
         f.close
 
-def run_dhtest(mac, arg_list, search_output):
-    cmd = "./dhtest -i eth0 -m " + mac + arg_list
+def run_dhtest(cfg, arg_list, search_output):
+    if arg_list instanceof list:
+        arg_list = ''.join(arg_list)
+    cmd = '{0} -i {1} -m {2} {3}'.format(
+                cfg.dhtest, cfg.iface, cfg.mac, arg_list)
     print_log("=============================================================")
     print_log("Running command ", cmd)
     out = commands.getoutput(cmd)
@@ -66,27 +76,27 @@ def run_dhtest(mac, arg_list, search_output):
 #  -D, --decline                         # Declines obtained DHCP IP for corresponding MAC
 #  -V, --verbose                         # Prints DHCP offer and ack details
 
-mac = "00:00:00:11:11:11"
-run_dhtest(mac, '',  "DHCP ack received")
-run_dhtest(mac, ' -V',  "DHCP ack received")
-run_dhtest(mac, ' -r',  "DHCP release sent")
-run_dhtest(mac, ' -L 1200', "DHCP ack received")
-run_dhtest(mac, ' -I 10.0.2.16', "DHCP ack received")
-run_dhtest(mac, ' -o MSFT 5.0', "DHCP ack received")
-run_dhtest(mac, ' -h client_hostname', "DHCP ack received")
-run_dhtest(mac, ' -t 10', "DHCP ack received")
-run_dhtest(mac, ' -i eth0', "DHCP ack received")
-run_dhtest(mac, ' -T 60', "DHCP ack received")
-run_dhtest(mac, ' -b -k 10', "DHCP ack received")
-run_dhtest(mac, ' -r', "DHCP release sent")
-run_dhtest(mac, ' -f ', "DHCP ack received")
-run_dhtest(mac, ' -d client.test.com ', "DHCP ack received")
-run_dhtest(mac, ' -n', "DHCP ack received")
-run_dhtest(mac, ' -s', "DHCP ack received")
-run_dhtest(mac, ' -p', "DHCP ack received")
-run_dhtest(mac, ' -g 10.0.2.1', "DHCP ack received")
-run_dhtest(mac, ' -a', "Acquired IP")
-run_dhtest(mac, ' -S 10.0.2.2 ', "DHCP ack received")
-run_dhtest(mac, ' -c 60,str,"MSFT 5.0" -c 82,hex,0108476967302f312f30021130303a30303a30303a31313a31313a3131 ', "DHCP ack received")
-run_dhtest(mac, ' -D',  "DHCP decline sent")
+cfg = Config("00:00:00:11:11:11")
+run_dhtest(cfg, '',  "DHCP ack received")
+run_dhtest(cfg, ' -V',  "DHCP ack received")
+run_dhtest(cfg, ' -r',  "DHCP release sent")
+run_dhtest(cfg, ' -L 1200', "DHCP ack received")
+run_dhtest(cfg, ' -I 10.0.2.16', "DHCP ack received")
+run_dhtest(cfg, ' -o MSFT 5.0', "DHCP ack received")
+run_dhtest(cfg, ' -h client_hostname', "DHCP ack received")
+run_dhtest(cfg, ' -t 10', "DHCP ack received")
+run_dhtest(cfg, ' -i eth0', "DHCP ack received")
+run_dhtest(cfg, ' -T 60', "DHCP ack received")
+run_dhtest(cfg, ' -b -k 10', "DHCP ack received")
+run_dhtest(cfg, ' -r', "DHCP release sent")
+run_dhtest(cfg, ' -f ', "DHCP ack received")
+run_dhtest(cfg, ' -d client.test.com ', "DHCP ack received")
+run_dhtest(cfg, ' -n', "DHCP ack received")
+run_dhtest(cfg, ' -s', "DHCP ack received")
+run_dhtest(cfg, ' -p', "DHCP ack received")
+run_dhtest(cfg, ' -g 10.0.2.1', "DHCP ack received")
+run_dhtest(cfg, ' -a', "Acquired IP")
+run_dhtest(cfg, ' -S 10.0.2.2 ', "DHCP ack received")
+run_dhtest(cfg, ' -c 60,str,"MSFT 5.0" -c 82,hex,0108476967302f312f30021130303a30303a30303a31313a31313a3131 ', "DHCP ack received")
+run_dhtest(cfg, ' -D',  "DHCP decline sent")
 
