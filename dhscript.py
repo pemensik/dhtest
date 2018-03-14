@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import commands
+import subprocess
 
 #reset script log file
 with open('dhscript_log.txt', 'w') as f:
@@ -17,6 +17,8 @@ class Config:
 #print_log(- prints the output to both stdout and file
 def print_log(msg, cmd=None):
     if cmd != None:
+        if isinstance(cmd, list):
+            cmd = ' '.join(cmd)
         print(msg, cmd)
         msg_full = msg + cmd + "\n"
     else:
@@ -35,18 +37,21 @@ def write_log(msg):
         f.close
 
 def run_dhtest(cfg, arg_list, search_output):
-    if arg_list instanceof list:
-        arg_list = ''.join(arg_list)
-    cmd = '{0} -i {1} -m {2} {3}'.format(
-                cfg.dhtest, cfg.iface, cfg.mac, arg_list)
+    if not isinstance(arg_list, list):
+        arg_list = ' '.split(arg_list)
+    cmd = [cfg.dhtest, '-i', cfg.iface, '-m', cfg.mac] +  arg_list
     print_log("=============================================================")
     print_log("Running command ", cmd)
-    out = commands.getoutput(cmd)
-    write_log(out)
-    if out.find(search_output) != -1:
-        print_log("PASS: command ", cmd)
-    else:
+    try:
+        out = subprocess.check_output(cmd)
+        write_log(out)
+        if out.find(search_output) != -1:
+            print_log("PASS: command ", cmd)
+        else:
+            print_log("FAIL: command ", cmd)
+    except subprocess.CalledProcessError:
         print_log("FAIL: command ", cmd)
+        
     print_log("============================================================")
 
 
@@ -77,26 +82,26 @@ def run_dhtest(cfg, arg_list, search_output):
 #  -V, --verbose                         # Prints DHCP offer and ack details
 
 cfg = Config("00:00:00:11:11:11")
-run_dhtest(cfg, '',  "DHCP ack received")
-run_dhtest(cfg, ' -V',  "DHCP ack received")
-run_dhtest(cfg, ' -r',  "DHCP release sent")
-run_dhtest(cfg, ' -L 1200', "DHCP ack received")
-run_dhtest(cfg, ' -I 10.0.2.16', "DHCP ack received")
-run_dhtest(cfg, ' -o MSFT 5.0', "DHCP ack received")
-run_dhtest(cfg, ' -h client_hostname', "DHCP ack received")
-run_dhtest(cfg, ' -t 10', "DHCP ack received")
-run_dhtest(cfg, ' -i eth0', "DHCP ack received")
-run_dhtest(cfg, ' -T 60', "DHCP ack received")
-run_dhtest(cfg, ' -b -k 10', "DHCP ack received")
-run_dhtest(cfg, ' -r', "DHCP release sent")
-run_dhtest(cfg, ' -f ', "DHCP ack received")
-run_dhtest(cfg, ' -d client.test.com ', "DHCP ack received")
-run_dhtest(cfg, ' -n', "DHCP ack received")
-run_dhtest(cfg, ' -s', "DHCP ack received")
-run_dhtest(cfg, ' -p', "DHCP ack received")
-run_dhtest(cfg, ' -g 10.0.2.1', "DHCP ack received")
-run_dhtest(cfg, ' -a', "Acquired IP")
-run_dhtest(cfg, ' -S 10.0.2.2 ', "DHCP ack received")
-run_dhtest(cfg, ' -c 60,str,"MSFT 5.0" -c 82,hex,0108476967302f312f30021130303a30303a30303a31313a31313a3131 ', "DHCP ack received")
-run_dhtest(cfg, ' -D',  "DHCP decline sent")
+run_dhtest(cfg, [],  "DHCP ack received")
+run_dhtest(cfg, ['-V'],  "DHCP ack received")
+run_dhtest(cfg, ['-r'],  "DHCP release sent")
+run_dhtest(cfg, ['-L','1200'], "DHCP ack received")
+run_dhtest(cfg, ['-I','10.0.2.16'], "DHCP ack received")
+run_dhtest(cfg, ['-o','MSFT 5.0'], "DHCP ack received")
+run_dhtest(cfg, ['-h','client_hostname'], "DHCP ack received")
+run_dhtest(cfg, ['-t','10'], "DHCP ack received")
+run_dhtest(cfg, ['-i','eth0'], "DHCP ack received")
+run_dhtest(cfg, ['-T','60'], "DHCP ack received")
+run_dhtest(cfg, ['-b','-k','10'], "DHCP ack received")
+run_dhtest(cfg, ['-r'], "DHCP release sent")
+run_dhtest(cfg, ['-f'], "DHCP ack received")
+run_dhtest(cfg, ['-d','client.test.com'], "DHCP ack received")
+run_dhtest(cfg, ['-n'], "DHCP ack received")
+run_dhtest(cfg, ['-s'], "DHCP ack received")
+run_dhtest(cfg, ['-p'], "DHCP ack received")
+run_dhtest(cfg, ['-g','10.0.2.1'], "DHCP ack received")
+run_dhtest(cfg, ['-a'], "Acquired IP")
+run_dhtest(cfg, ['-S','10.0.2.2'], "DHCP ack received")
+run_dhtest(cfg, ['-c','60,str,"MSFT 5.0"', '-c','82,hex,0108476967302f312f30021130303a30303a30303a31313a31313a3131'], "DHCP ack received")
+run_dhtest(cfg, ['-D'],  "DHCP decline sent")
 
