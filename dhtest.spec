@@ -5,7 +5,7 @@
 
 Name:		dhtest
 Version:	1.5
-Release:	1%{?snapinfo:.%{snapinfo}}%{?dist}
+Release:	2%{?snapinfo:.%{snapinfo}}%{?dist}
 Summary:	A DHCP client simulation on linux
 
 License:	GPLv2
@@ -35,9 +35,13 @@ mkdir -p %{buildroot}%{_bindir}
 
 %files
 %doc README.txt
+%license LICENSE
 %{_bindir}/dhtest
 
 %changelog
+* Sun Dec 15 2019 Petr Menšík <pemensik@redhat.com> - 1.5-2
+- Add license
+
 * Thu Mar 15 2018 Petr Menšík <pemensik@redhat.com> - 1.5-1
 - Initial package
 
