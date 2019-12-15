@@ -15,7 +15,9 @@ Source0:	https://github.com/saravana815/dhtest/archive/%{gittag}/%{name}-%{versi
 BuildRequires:	gcc
 
 %description
-It can simulates multiple DHCP clients behind a network device. It can help in testing the DHCP servers or in testing switch/router by loading the device with multiple DHCP clients.
+It can simulate multiple DHCP clients behind a network device.
+It can help in testing the DHCP servers or in testing switch/router
+by loading the device with multiple DHCP clients.
 
 %prep
 %autosetup -n %{name}-%{version}
